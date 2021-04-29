@@ -39,7 +39,7 @@ from bokeh.plotting import figure, curdoc
 from bokeh.themes import Theme
 from bokeh.io import show, output_notebook, reset_output
 from bokeh.palettes import YlOrRd9
-output_notebook()
+#output_notebook()
 
 # --- data ---
 # these were calculated on foe-linux: at the bottom of emulator_plots.ipynb
