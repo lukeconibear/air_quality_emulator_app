@@ -246,5 +246,5 @@ grid = gridplot(
 curdoc().add_root(grid)
 curdoc().title = 'Emulator'
 
-if __name__ == '__main__':
-    subprocess.run(["bokeh", "serve", "--show", "plot_emulator_app.py"])
+#if __name__ == '__main__':
+#    subprocess.run(["bokeh", "serve", "--show", "plot_emulator_app.py"])
