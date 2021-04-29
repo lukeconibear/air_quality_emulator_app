@@ -1,35 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# print('How emissions impact air quality and health in China')
-# print() 
-# print('------------------------------------------------')
-# print()
-# # An interactive plot visualising how emission changes impact air pollution exposure and the associated disease burden in China.  
-# print()
-# # **Key results**  
-# # - Both PM₂.₅ and O₃ concentrations are primarily sensitive to industrial emissions.  
-# # - Reducing industrial and residential emissions can reduce PM₂.₅ exposure by 60% and O₃ exposure by 14%, avoiding 919,400 (95% uncertainty interval: 889,000−954,200) premature deaths in China.  
-# print()
-# # **Data**  
-# # - These results are from machine learning models that emulate complex air quality models.  
-# # - For more information, see the papers [here](...) ([code](https://github.com/lukeconibear/emulator_annual)) and [here](https://doi.org/10.1029/2021GH000391) ([code](https://github.com/lukeconibear/emulator)).  
-# print()
-# # **Acronyms**  
-# # - PM₂.₅ = Fine particulate matter (annual-mean).  
-# # - O₃ = Ozone (maximum 6−monthly−mean daily−maximum 8−hour).  
-# # - MORT = Premature mortalities (annual number).  
-# print('------------------------------------------------')
-# print()
-# # *Move the sliders to explore the results.*  
-# print()
-# print('------------------------------------------------')
-
 import joblib
 import subprocess
 import numpy as np
 import pandas as pd
-import geopandas as gpd
 from bokeh.layouts import column, row, gridplot
 from bokeh.models import (ColumnDataSource, CustomJS, LinearColorMapper, 
                           GeoJSONDataSource, Panel, Tabs, 
@@ -39,7 +14,6 @@ from bokeh.plotting import figure, curdoc
 from bokeh.themes import Theme
 from bokeh.io import show, output_notebook, reset_output
 from bokeh.palettes import YlOrRd9
-#output_notebook()
 
 # --- data ---
 # these were calculated on foe-linux: at the bottom of emulator_plots.ipynb
@@ -245,6 +219,3 @@ grid = gridplot(
 
 curdoc().add_root(grid)
 curdoc().title = 'Emulator'
-
-#if __name__ == '__main__':
-#    subprocess.run(["bokeh", "serve", "--show", "plot_emulator_app.py"])
