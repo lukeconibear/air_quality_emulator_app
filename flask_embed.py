@@ -37,7 +37,7 @@ def bkapp(doc):
     doc.theme = Theme(filename="theme.yaml")
 
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def bkapp_page():
     script = server_document('https://air-quality-emulator.herokuapp.com/')
     return render_template("index.html", script=script, template="Flask")
