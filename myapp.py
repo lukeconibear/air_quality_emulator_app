@@ -25,7 +25,7 @@ from bokeh.embed import components
 app = Flask(__name__)
 
 @app.route('/')
-def bkapp():
+def bkapp(doc):
     # --- data ---
     # these were calculated on foe-linux: at the bottom of emulator_plots.ipynb
     path = '/home/emulator/data'
@@ -228,9 +228,12 @@ def bkapp():
          [plot_mort_PM2_5_DRY, plot_mort_o3_6mDM8h]],
         plot_width=400, plot_height=300) # , sizing_mode='scale_both'
 
-    script, div = components(grid)
+    doc.add_root(grid)
+    
+    script, div = components(doc)
+    
     return render_template("embed.html", script=script, div=div)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=33507)
