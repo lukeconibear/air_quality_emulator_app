@@ -228,10 +228,8 @@ def bkapp():
          [plot_mort_PM2_5_DRY, plot_mort_o3_6mDM8h]],
         plot_width=400, plot_height=300) # , sizing_mode='scale_both'
 
-    curdoc().add_root(grid)
-
-    script = server_document('/bkapp', relative_urls=True)
-    return render_template("embed.html", script=script, template="Flask")
+    script, div = components(grid)
+    return render_template("embed.html", script=script, div=div)
 
 
 if __name__ == '__main__':
