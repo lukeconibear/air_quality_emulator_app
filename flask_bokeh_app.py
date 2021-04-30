@@ -226,9 +226,7 @@ def bkapp(doc):
          [plot_exposure_PM2_5_DRY, plot_exposure_o3_6mDM8h],
          [plot_mort_PM2_5_DRY, plot_mort_o3_6mDM8h]],
         plot_width=400, plot_height=300) # , sizing_mode='scale_both'
-
-    doc.add_root(grid)
-    
+  
     doc.add_root(grid)
     doc.title = 'Emulator'
     doc.theme = Theme(filename="theme.yaml")
@@ -241,7 +239,7 @@ def bkapp_page():
 
 
 def bk_worker():
-    server = Server({'/bkapp': bkapp}, io_loop=IOLoop(), allow_websocket_origin=["https://air-quality-emulator.herokuapp.com"])
+    server = Server({'/bkapp': bkapp}, io_loop=IOLoop(), allow_websocket_origin=["air-quality-emulator.herokuapp.com"])
     server.start()
     server.io_loop.start()
 
