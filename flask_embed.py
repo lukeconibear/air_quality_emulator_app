@@ -39,22 +39,18 @@ def bkapp(doc):
 
 @app.route('/', methods=['GET'])
 def bkapp_page():
-    script = server_document('http://localhost:5006/bkapp')
+    script = server_document('/bkapp', relative_urls=True)
     return render_template("embed.html", script=script, template="Flask")
 
 
 def bk_worker():
     # Can't pass num_procs > 1 in this configuration. If you need to run multiple
     # processes, see e.g. flask_gunicorn_embed.py
-    server = Server({'/bkapp': bkapp}, io_loop=IOLoop(), allow_websocket_origin=["localhost:8000"])
+    server = Server({'/bkapp': bkapp}, io_loop=IOLoop())
     server.start()
     server.io_loop.start()
 
 Thread(target=bk_worker).start()
 
 if __name__ == '__main__':
-    print('Opening single process Flask app with embedded Bokeh application on http://localhost:8000/')
-    print()
-    print('Multiple connections may block the Bokeh app in this configuration!')
-    print('See "flask_gunicorn_embed.py" for one way to run multi-process')
-    app.run(port=8000)
+    app.run()
