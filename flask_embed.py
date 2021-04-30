@@ -39,18 +39,19 @@ def bkapp(doc):
 
 @app.route('/', methods=['GET'])
 def bkapp_page():
-    script = server_document('/bkapp', relative_urls=True)
-    return render_template("embed.html", script=script, template="Flask")
+    script = server_document('https://air-quality-emulator.herokuapp.com/')
+    return render_template("index.html", script=script, template="Flask")
 
 
 def bk_worker():
-    # Can't pass num_procs > 1 in this configuration. If you need to run multiple
-    # processes, see e.g. flask_gunicorn_embed.py
-    server = Server({'/bkapp': bkapp}, io_loop=IOLoop())
+    server = Server({'/bkapp': bkapp}, io_loop=IOLoop(), allow_websocket_origin=["https://air-quality-emulator.herokuapp.com/"])
     server.start()
     server.io_loop.start()
 
+    
 Thread(target=bk_worker).start()
+
 
 if __name__ == '__main__':
     app.run()
+    
