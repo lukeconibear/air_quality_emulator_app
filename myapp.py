@@ -24,7 +24,6 @@ from bokeh.embed import components
 
 app = Flask(__name__)
 
-@app.route('/')
 def bkapp(doc):
     # --- data ---
     # these were calculated on foe-linux: at the bottom of emulator_plots.ipynb
@@ -230,10 +229,26 @@ def bkapp(doc):
 
     doc.add_root(grid)
     
-    script, div = components(doc)
-    
-    return render_template("embed.html", script=script, div=div)
+    doc.add_root(grid)
+    doc.title = 'Emulator'
+    doc.theme = Theme(filename="theme.yaml")
+
+
+@app.route('/', methods=['GET'])
+def bkapp_page():
+    script = server_document('https://air-quality-emulator.herokuapp.com/bkapp')
+    return render_template("embed.html", script=script, template="Flask")
+
+
+def bk_worker():
+    server = Server({'/bkapp': bkapp}, io_loop=IOLoop(), allow_websocket_origin=["https://air-quality-emulator.herokuapp.com"])
+    server.start()
+    server.io_loop.start()
+
+
+Thread(target=bk_worker).start()
 
 
 if __name__ == '__main__':
     app.run()
+    
