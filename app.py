@@ -122,9 +122,9 @@ source_mort_PM2_5_DRY = sources['PM2_5_DRY_mort_mean']
 source_mort_o3_6mDM8h = sources['o3_6mDM8h_mort_mean']
 
 plot_exposure_PM2_5_DRY = create_plot(source_exposure_PM2_5_DRY, 'PM2_5_DRY', 'exposure')
-plot_exposure_o3_6mDM8h = create_plot(source_exposure_o3_6mDM8h, 'o3_6mDM8h', 'exposure')
-plot_mort_PM2_5_DRY = create_plot(source_mort_PM2_5_DRY, 'PM2_5_DRY', 'mort')
-plot_mort_o3_6mDM8h = create_plot(source_mort_o3_6mDM8h, 'o3_6mDM8h', 'mort')
+#plot_exposure_o3_6mDM8h = create_plot(source_exposure_o3_6mDM8h, 'o3_6mDM8h', 'exposure')
+#plot_mort_PM2_5_DRY = create_plot(source_mort_PM2_5_DRY, 'PM2_5_DRY', 'mort')
+#plot_mort_o3_6mDM8h = create_plot(source_mort_o3_6mDM8h, 'o3_6mDM8h', 'mort')
 
 slider_mort_res = Slider(start=0.0, end=1.4, value=1.0, step=0.2, title="Fractional residential emissions", format='0.f')
 slider_mort_ind = Slider(start=0.0, end=1.4, value=1.0, step=0.2, title="Fractional industrial emissions", format='0.f')
@@ -208,11 +208,11 @@ slider_mort_tra.js_on_change('value', callback_mort)
 slider_mort_agr.js_on_change('value', callback_mort)
 slider_mort_ene.js_on_change('value', callback_mort)
 
-grid = gridplot(
-    [[column(slider_mort_res, slider_mort_ind, slider_mort_tra, slider_mort_agr, slider_mort_ene)], 
-     [plot_exposure_PM2_5_DRY, plot_exposure_o3_6mDM8h],
-     [plot_mort_PM2_5_DRY, plot_mort_o3_6mDM8h]], 
-    plot_width=400, plot_height=300) # , sizing_mode='scale_both'
+#grid = gridplot(
+#    [[column(slider_mort_res, slider_mort_ind, slider_mort_tra, slider_mort_agr, slider_mort_ene)], 
+#     [plot_exposure_PM2_5_DRY, plot_exposure_o3_6mDM8h],
+#     [plot_mort_PM2_5_DRY, plot_mort_o3_6mDM8h]], 
+#    plot_width=400, plot_height=300) # , sizing_mode='scale_both'
 
 #show(grid)
 curdoc().add_root(column(plot_exposure_PM2_5_DRY))
