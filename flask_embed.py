@@ -1,57 +1,68 @@
-from threading import Thread
+'''This example demonstrates embedding a standalone Bokeh document
+into a simple Flask application, with a basic HTML web form.
+To view the example, run:
+    python simple.py
+in this directory, and navigate to:
+    http://localhost:5000
+'''
+from __future__ import print_function
 
-from flask import Flask, render_template
-from tornado.ioloop import IOLoop
+import flask
 
-from bokeh.embed import server_document
-from bokeh.layouts import column
-from bokeh.models import ColumnDataSource, Slider
+from bokeh.embed import components
 from bokeh.plotting import figure
-from bokeh.sampledata.sea_surface_temperature import sea_surface_temperature
-from bokeh.server.server import Server
-from bokeh.themes import Theme
+from bokeh.resources import INLINE
+from bokeh.util.string import encode_utf8
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
+colors = {
+    'Black': '#000000',
+    'Red':   '#FF0000',
+    'Green': '#00FF00',
+    'Blue':  '#0000FF',
+}
 
-def bkapp(doc):
-    df = sea_surface_temperature.copy()
-    source = ColumnDataSource(data=df)
+def getitem(obj, item, default):
+    if item not in obj:
+        return default
+    else:
+        return obj[item]
 
-    plot = figure(x_axis_type='datetime', y_range=(0, 25), y_axis_label='Temperature (Celsius)',
-                  title="Sea Surface Temperature at 43.18, -70.43")
-    plot.line('time', 'temperature', source=source)
+@app.route("/")
+def polynomial():
+    """ Very simple embedding of a polynomial chart
+    """
 
-    def callback(attr, old, new):
-        if new == 0:
-            data = df
-        else:
-            data = df.rolling(f"{new}D").mean()
-        source.data = ColumnDataSource.from_df(data)
+    # Grab the inputs arguments from the URL
+    args = flask.request.args
 
-    slider = Slider(start=0, end=30, value=0, step=1, title="Smoothing by N Days")
-    slider.on_change('value', callback)
+    # Get all the form arguments in the url with defaults
+    color = getitem(args, 'color', 'Black')
+    _from = int(getitem(args, '_from', 0))
+    to = int(getitem(args, 'to', 10))
 
-    doc.add_root(column(slider, plot))
+    # Create a polynomial line graph with those arguments
+    x = list(range(_from, to + 1))
+    fig = figure(title="Polynomial")
+    fig.line(x, [i ** 2 for i in x], color=colors[color], line_width=2)
 
-    doc.theme = Theme(filename="theme.yaml")
+    js_resources = INLINE.render_js()
+    css_resources = INLINE.render_css()
 
+    script, div = components(fig)
+    html = flask.render_template(
+        'embed.html',
+        plot_script=script,
+        plot_div=div,
+        js_resources=js_resources,
+        css_resources=css_resources,
+        color=color,
+        _from=_from,
+        to=to
+    )
+    return encode_utf8(html)
 
-@app.route('/')
-def bkapp_page():
-    script = server_document('https://air-quality-emulator.herokuapp.com/')
-    return render_template("index.html", script=script, template="Flask")
-
-
-def bk_worker():
-    server = Server({'/bkapp': bkapp}, io_loop=IOLoop(), allow_websocket_origin=["https://air-quality-emulator.herokuapp.com/"])
-    server.start()
-    server.io_loop.start()
-
-    
-Thread(target=bk_worker).start()
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
+    print(__doc__)
     app.run()
-    
