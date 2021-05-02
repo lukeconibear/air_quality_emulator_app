@@ -1,16 +1,11 @@
 import joblib
 import numpy as np
-import pandas as pd
-import geopandas as gpd
 
-from bokeh.layouts import column, row, gridplot
+from bokeh.layouts import column, gridplot
 from bokeh.models import (ColumnDataSource, CustomJS, LinearColorMapper, 
-                          GeoJSONDataSource, Panel, Tabs, 
-                          FixedTicker, ColorBar, Select,
+                          FixedTicker, ColorBar, 
                           Slider, TextInput, NumeralTickFormatter)
 from bokeh.plotting import figure
-from bokeh.themes import Theme
-from bokeh.io import show, output_notebook, reset_output
 from bokeh.palettes import YlOrRd9
 
 from flask import Flask, render_template
@@ -234,5 +229,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    
+    app.run()
