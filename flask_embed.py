@@ -2,6 +2,7 @@ import joblib
 import numpy as np
 import pandas as pd
 import geopandas as gpd
+
 from bokeh.layouts import column, row, gridplot
 from bokeh.models import (ColumnDataSource, CustomJS, LinearColorMapper, 
                           GeoJSONDataSource, Panel, Tabs, 
@@ -9,8 +10,15 @@ from bokeh.models import (ColumnDataSource, CustomJS, LinearColorMapper,
                           Slider, TextInput, NumeralTickFormatter)
 from bokeh.plotting import figure
 from bokeh.themes import Theme
-from bokeh.io import curdoc
+from bokeh.io import show, output_notebook, reset_output
 from bokeh.palettes import YlOrRd9
+
+from flask import Flask, render_template
+from bokeh.document import Document
+from bokeh.resources import CDN
+from bokeh.embed import file_html
+
+app = Flask(__name__)
 
 # --- data ---
 # these were calculated on foe-linux: at the bottom of emulator_plots.ipynb
@@ -122,9 +130,9 @@ source_mort_PM2_5_DRY = sources['PM2_5_DRY_mort_mean']
 source_mort_o3_6mDM8h = sources['o3_6mDM8h_mort_mean']
 
 plot_exposure_PM2_5_DRY = create_plot(source_exposure_PM2_5_DRY, 'PM2_5_DRY', 'exposure')
-#plot_exposure_o3_6mDM8h = create_plot(source_exposure_o3_6mDM8h, 'o3_6mDM8h', 'exposure')
-#plot_mort_PM2_5_DRY = create_plot(source_mort_PM2_5_DRY, 'PM2_5_DRY', 'mort')
-#plot_mort_o3_6mDM8h = create_plot(source_mort_o3_6mDM8h, 'o3_6mDM8h', 'mort')
+plot_exposure_o3_6mDM8h = create_plot(source_exposure_o3_6mDM8h, 'o3_6mDM8h', 'exposure')
+plot_mort_PM2_5_DRY = create_plot(source_mort_PM2_5_DRY, 'PM2_5_DRY', 'mort')
+plot_mort_o3_6mDM8h = create_plot(source_mort_o3_6mDM8h, 'o3_6mDM8h', 'mort')
 
 slider_mort_res = Slider(start=0.0, end=1.4, value=1.0, step=0.2, title="Fractional residential emissions", format='0.f')
 slider_mort_ind = Slider(start=0.0, end=1.4, value=1.0, step=0.2, title="Fractional industrial emissions", format='0.f')
@@ -208,11 +216,23 @@ slider_mort_tra.js_on_change('value', callback_mort)
 slider_mort_agr.js_on_change('value', callback_mort)
 slider_mort_ene.js_on_change('value', callback_mort)
 
-#grid = gridplot(
-#    [[column(slider_mort_res, slider_mort_ind, slider_mort_tra, slider_mort_agr, slider_mort_ene)], 
-#     [plot_exposure_PM2_5_DRY, plot_exposure_o3_6mDM8h],
-#     [plot_mort_PM2_5_DRY, plot_mort_o3_6mDM8h]], 
-#    plot_width=400, plot_height=300) # , sizing_mode='scale_both'
+grid = gridplot(
+    [[column(slider_mort_res, slider_mort_ind, slider_mort_tra, slider_mort_agr, slider_mort_ene)], 
+     [plot_exposure_PM2_5_DRY, plot_exposure_o3_6mDM8h],
+     [plot_mort_PM2_5_DRY, plot_mort_o3_6mDM8h]], 
+    plot_width=400, plot_height=300) # , sizing_mode='scale_both'
 
-#show(grid)
-curdoc().add_root(column(plot_exposure_PM2_5_DRY))
+
+doc = Document()
+doc.add_root(grid)
+
+html = file_html(doc, CDN, "bokeh plot")
+
+@app.route('/')
+def index():
+    return render_template("embed.html", html=html, template="Flask")
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+    
